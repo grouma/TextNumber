@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Text Number</title>
+    </head>
+    <body>
+       <h1>
+           Hello World
+       </h1>
+        <button>
+            Register protocol handler
+        </button>
+    </body>
+     <script >
+         document.querySelector('button').addEventListener('click', () => {
+             navigator.registerProtocolHandler('tel', './?dial=%s');
+         });
+    </script>
+</html>
