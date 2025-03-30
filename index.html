@@ -1,18 +1,108 @@
 <html>
-    <head>
-        <title>Text Number</title>
-    </head>
-    <body>
-       <h1>
-           Hello World
-       </h1>
-        <button>
-            Register protocol handler
+
+<head>
+    <title>Text A Number</title>
+</head>
+<style>
+    div {
+        padding: 8px;
+        margin: 8px;
+    }
+
+    input {
+        width: 256px;
+    }
+
+    div.options {
+        display: grid;
+        grid-template-columns: max-content max-content;
+        grid-gap: 5px;
+    }
+
+    div.options label {
+
+        text-align: right;
+    }
+
+    div.options label:after {
+        content: ":"
+    }
+
+    div.buttons {
+        display: grid;
+    }
+
+    button {
+        padding: 8px;
+        margin: 8px;
+    }
+</style>
+
+<body>
+    <div class="options">
+        <label>Number</label>
+        <input type="tel" id="number" />
+
+        <label>Email</label>
+        <input type="email" id="email" />
+    </div>
+
+    <div class="buttons">
+        <button id="send">
+            Send Manually
         </button>
-    </body>
-     <script >
-         document.querySelector('button').addEventListener('click', () => {
-             navigator.registerProtocolHandler('tel', './?dial=%s');
-         });
-    </script>
+        <button id="save">
+            Save Email
+        </button>
+        <button id="protocol">
+            Register Protocol Handler
+        </button>
+    </div>
+</body>
+
+<script>
+    const dialParam = 'dial';
+    const telParam = 'tel:';
+
+    let email = localStorage.getItem('email');
+    if (email) {
+        document.querySelector('#email').value = email;
+    }
+
+    let number = null;
+    const urlString = window.location.search;
+    const searchParams = new URLSearchParams(urlString);
+    const hasParam = searchParams.has(dialParam);
+    if (hasParam) {
+        number = searchParams.get(dialParam);
+        if (number.startsWith(telParam)) {
+            number = number.slice(telParam.length);
+        }
+        document.querySelector('#number').value = number;
+    }
+
+    function sendEmail() {
+        number = document.querySelector('#number').value;
+        email = document.querySelector('#email').value;
+        if (number && email) {
+            window.location.href = `mailto:${email}?body=${number}`;
+        }
+    }
+
+    document.querySelector('#protocol').addEventListener('click', () => {
+        navigator.registerProtocolHandler('tel', `./?${dialParam}=%s`);
+    });
+
+    document.querySelector('#save').addEventListener('click', () => {
+        email = document.querySelector('#email').value;
+        localStorage.setItem('email', email);
+    });
+
+    document.querySelector('#send').addEventListener('click', () => {
+        sendEmail();
+    });
+
+    sendEmail();
+</script>
+
 </html>
